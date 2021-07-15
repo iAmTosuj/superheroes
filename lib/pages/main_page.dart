@@ -77,7 +77,7 @@ class MainPageStateWidget extends StatelessWidget {
             case MainPageState.loading:
               return LoadingIndicator();
             case MainPageState.favorites:
-              return SearchResultsWidget();
+              return YourFavouritesWidget();
             case MainPageState.noFavorites:
               return Center(
                 child: InfoWithButton(
