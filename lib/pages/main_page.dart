@@ -136,7 +136,7 @@ class SearchResultsWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
-            'Your favorites',
+            'Search results',
             style: TextStyle(
                 color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
           ),
@@ -159,10 +159,10 @@ class SearchResultsWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: SuperheroCard(
-            realName: 'Tony Stark',
-            name: 'Ironman',
+            realName: 'Eddie Brock',
+            name: 'Venom',
             imageUrl:
-                'https://www.superherodb.com/pictures2/portraits/10/100/85.jpg',
+                'https://www.superherodb.com/pictures2/portraits/10/100/22.jpg',
           ),
         ),
       ],
