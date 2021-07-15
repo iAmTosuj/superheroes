@@ -77,7 +77,7 @@ class MainPageStateWidget extends StatelessWidget {
             case MainPageState.loading:
               return LoadingIndicator();
             case MainPageState.favorites:
-              return YourFavouritesWidget();
+              return SearchResultsWidget();
             case MainPageState.noFavorites:
               return Center(
                 child: InfoWithButton(
@@ -104,9 +104,10 @@ class MainPageStateWidget extends StatelessWidget {
                   ),
                 ),
               );
+            case MainPageState.searchResults:
+              return SearchResultsWidget();
             case MainPageState.nothingFound:
             case MainPageState.loadingError:
-            case MainPageState.searchResults:
             default:
               return Center(
                 child: ActionButton(
@@ -116,6 +117,56 @@ class MainPageStateWidget extends StatelessWidget {
               );
           }
         });
+  }
+}
+
+class SearchResultsWidget extends StatelessWidget {
+  const SearchResultsWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 90,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            'Your favorites',
+            style: TextStyle(
+                color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SuperheroCard(
+            realName: 'Bruce Wayne',
+            name: 'Batman',
+            imageUrl:
+                'https://www.superherodb.com/pictures2/portraits/10/100/639.jpg',
+          ),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SuperheroCard(
+            realName: 'Tony Stark',
+            name: 'Ironman',
+            imageUrl:
+                'https://www.superherodb.com/pictures2/portraits/10/100/85.jpg',
+          ),
+        ),
+      ],
+    );
   }
 }
 
