@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:superheroes/bloc/main_bloc.dart';
+import 'package:superheroes/blocs/main_bloc.dart';
 import 'package:superheroes/resources/superheroes_colors.dart';
+import 'package:superheroes/widgets/action_button.dart';
+import 'package:superheroes/widgets/info_with_button.dart';
+import 'package:superheroes/widgets/superhero_card.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key? key}) : super(key: key);
@@ -73,21 +76,96 @@ class MainPageStateWidget extends StatelessWidget {
           switch (state) {
             case MainPageState.loading:
               return LoadingIndicator();
-            case MainPageState.noFavourites:
+            case MainPageState.favorites:
+              return YourFavouritesWidget();
+            case MainPageState.noFavorites:
+              return Center(
+                child: InfoWithButton(
+                    title: 'No favorites yet',
+                    subtitle: 'Search and add',
+                    buttonText: 'Search',
+                    assetImage: '',
+                    imageHeight: 0,
+                    imageWidth: 0,
+                    imageTopPadding: 9),
+              );
             case MainPageState.minSymbols:
+              return Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  padding: EdgeInsets.only(top: 110),
+                  child: Text(
+                    'Enter at least 3 symbols',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              );
             case MainPageState.nothingFound:
             case MainPageState.loadingError:
             case MainPageState.searchResults:
-            case MainPageState.favourites:
             default:
               return Center(
-                child: Text(
-                  state.toString(),
-                  style: TextStyle(color: Colors.white),
+                child: ActionButton(
+                  text: 'NEXT STATE',
+                  onTap: () {},
                 ),
               );
           }
         });
+  }
+}
+
+class YourFavouritesWidget extends StatelessWidget {
+  const YourFavouritesWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 90,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            'Your favorites',
+            style: TextStyle(
+                color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SuperheroCard(
+            realName: 'Bruce Wayne',
+            name: 'Batman',
+            imageUrl:
+                'https://www.superherodb.com/pictures2/portraits/10/100/639.jpg',
+          ),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SuperheroCard(
+            realName: 'Tony Stark',
+            name: 'Ironman',
+            imageUrl:
+                'https://www.superherodb.com/pictures2/portraits/10/100/85.jpg',
+          ),
+        ),
+      ],
+    );
   }
 }
 
