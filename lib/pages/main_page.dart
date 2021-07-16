@@ -108,8 +108,8 @@ class MainPageStateWidget extends StatelessWidget {
             default:
               return Center(
                 child: ActionButton(
-                  text: 'NEXT STATE',
-                  onTap: () {},
+                  text: 'Next State'.toUpperCase(),
+                  onTap: () => bloc.nextState(),
                 ),
               );
           }

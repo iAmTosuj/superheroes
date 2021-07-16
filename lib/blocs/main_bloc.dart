@@ -30,7 +30,7 @@ enum MainPageState {
   minSymbols,
   loading,
   favorites,
+  searchResults,
   nothingFound,
   loadingError,
-  searchResults,
 }

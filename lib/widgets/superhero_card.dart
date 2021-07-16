@@ -34,7 +34,7 @@ class SuperheroCard extends StatelessWidget {
               children: [
                 Container(
                   child: Text(
-                    name,
+                    name.toUpperCase(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
