@@ -25,6 +25,7 @@ class SuperheroCard extends StatelessWidget {
             width: 70,
             height: 70,
           ),
+          SizedBox(),
           Expanded(
               child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
