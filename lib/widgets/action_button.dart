@@ -16,7 +16,7 @@ class ActionButton extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8), color: Color(0xFF00BCD4)),
         child: Text(
-          text,
+          text.toUpperCase(),
           style: TextStyle(
               color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
         ),

@@ -83,8 +83,8 @@ class MainPageStateWidget extends StatelessWidget {
                     subtitle: 'Search and add',
                     buttonText: 'Search',
                     assetImage: "assets/images/ironman.png",
-                    imageHeight: 108,
-                    imageWidth: 119,
+                    imageHeight: 119,
+                    imageWidth: 108,
                     imageTopPadding: 9),
               );
             case MainPageState.minSymbols:
