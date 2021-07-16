@@ -36,9 +36,9 @@ class InfoWithButton extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: imageTopPadding),
               child: Image(
-                width: 108,
-                height: 119,
-                image: AssetImage("assets/images/ironman.png"),
+                width: imageWidth,
+                height: imageHeight,
+                image: AssetImage(assetImage),
               ),
             )
           ],
