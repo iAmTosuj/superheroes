@@ -46,12 +46,9 @@ class MainPageContent extends StatelessWidget {
         MainPageStateWidget(),
         Align(
           alignment: Alignment.bottomCenter,
-          child: GestureDetector(
+          child: ActionButton(
+            text: 'Next State'.toUpperCase(),
             onTap: () => bloc.nextState(),
-            child: Text(
-              'Next State'.toUpperCase(),
-              style: TextStyle(fontSize: 20, color: Colors.white),
-            ),
           ),
         )
       ],
