@@ -76,8 +76,8 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
       final MainBloc bloc = Provider.of<MainBloc>(context, listen: false);
 
@@ -89,8 +89,11 @@ class _SearchWidgetState extends State<SearchWidget> {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      cursorColor: Colors.white,
+      textCapitalization: TextCapitalization.words,
       style: TextStyle(
           fontWeight: FontWeight.w400, fontSize: 20, color: Colors.white),
+      textInputAction: TextInputAction.search,
       decoration: InputDecoration(
           suffix: GestureDetector(
             onTap: () {
@@ -108,7 +111,13 @@ class _SearchWidgetState extends State<SearchWidget> {
             color: Colors.white54,
             size: 24,
           ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.white, width: 2),
+          ),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.white24))),
@@ -134,7 +143,7 @@ class MainPageStateWidget extends StatelessWidget {
             case MainPageState.loading:
               return LoadingIndicator();
             case MainPageState.favorites:
-              return SuperheroList(
+              return SuperheroesList(
                   title: 'Favorite superhero',
                   stream: bloc.observeFavoriteSuperheroes());
             case MainPageState.noFavorites:
@@ -164,7 +173,7 @@ class MainPageStateWidget extends StatelessWidget {
                 ),
               );
             case MainPageState.searchResults:
-              return SuperheroList(
+              return SuperheroesList(
                   title: 'Search results',
                   stream: bloc.observeSearchedSuperheroes());
             case MainPageState.nothingFound:
@@ -201,11 +210,11 @@ class MainPageStateWidget extends StatelessWidget {
   }
 }
 
-class SuperheroList extends StatelessWidget {
+class SuperheroesList extends StatelessWidget {
   final String title;
   final Stream<List<SuperheroInfo>> stream;
 
-  const SuperheroList({Key? key, required this.title, required this.stream})
+  const SuperheroesList({Key? key, required this.title, required this.stream})
       : super(key: key);
 
   @override
@@ -220,6 +229,7 @@ class SuperheroList extends StatelessWidget {
           final List<SuperheroInfo> superheroes = snapshot.data!;
 
           return ListView.separated(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemCount: superheroes.length + 1,
             itemBuilder: (BuildContext context, int index) {
               if (index == 0) {
@@ -241,9 +251,7 @@ class SuperheroList extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: SuperheroCard(
-                    name: item.name,
-                    realName: item.realName,
-                    imageUrl: item.imageUrl,
+                    superheroInfo: item,
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SuperheroPage(name: item.name),

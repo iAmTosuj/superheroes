@@ -62,7 +62,11 @@ class MainBloc {
 
   Future<List<SuperheroInfo>> search(final String text) async {
     await Future.delayed(Duration(seconds: 1));
-    return SuperheroInfo.mocked;
+
+    return SuperheroInfo.mocked
+        .where((superhero) =>
+            superhero.name.toLowerCase().contains(text.toLowerCase()))
+        .toList();
   }
 
   void updateText(final String? text) {
