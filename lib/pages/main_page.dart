@@ -41,18 +41,9 @@ class _MainPageState extends State<MainPage> {
 class MainPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final MainBloc bloc = Provider.of<MainBloc>(context);
-
     return Stack(
       children: [
         MainPageStateWidget(),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: ActionButton(
-            text: 'Next State'.toUpperCase(),
-            onTap: () => bloc.nextState(),
-          ),
-        ),
         Padding(
           padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
           child: SearchWidget(),
@@ -73,6 +64,7 @@ class SearchWidget extends StatefulWidget {
 
 class _SearchWidgetState extends State<SearchWidget> {
   final TextEditingController controller = TextEditingController();
+  bool haveSearchText = false;
 
   @override
   void initState() {
@@ -81,7 +73,16 @@ class _SearchWidgetState extends State<SearchWidget> {
     SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
       final MainBloc bloc = Provider.of<MainBloc>(context, listen: false);
 
-      controller.addListener(() => bloc.updateText(controller.text));
+      controller.addListener(() {
+        bloc.updateText(controller.text);
+        final haveText = controller.text.isNotEmpty;
+
+        if (haveSearchText != haveText) {
+          setState(() {
+            haveSearchText = haveText;
+          });
+        }
+      });
     });
   }
 
@@ -120,7 +121,9 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.white24))),
+              borderSide: haveSearchText
+                  ? BorderSide(color: Colors.white, width: 2)
+                  : BorderSide(color: Colors.white24))),
     );
   }
 }
@@ -143,19 +146,35 @@ class MainPageStateWidget extends StatelessWidget {
             case MainPageState.loading:
               return LoadingIndicator();
             case MainPageState.favorites:
-              return SuperheroesList(
-                  title: 'Favorite superhero',
-                  stream: bloc.observeFavoriteSuperheroes());
+              return Stack(
+                children: [
+                  SuperheroesList(
+                      title: 'Your favorites',
+                      stream: bloc.observeFavoriteSuperheroes()),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ActionButton(
+                          text: 'Remove', onTap: bloc.removeFavorite))
+                ],
+              );
             case MainPageState.noFavorites:
-              return Center(
-                child: InfoWithButton(
-                    title: 'No favorites yet',
-                    subtitle: 'Search and add',
-                    buttonText: 'Search',
-                    assetImage: "assets/images/ironman.png",
-                    imageHeight: 119,
-                    imageWidth: 108,
-                    imageTopPadding: 9),
+              return Stack(
+                children: [
+                  Center(
+                    child: InfoWithButton(
+                        title: 'No favorites yet',
+                        subtitle: 'Search and add',
+                        buttonText: 'Search',
+                        assetImage: "assets/images/ironman.png",
+                        imageHeight: 119,
+                        imageWidth: 108,
+                        imageTopPadding: 9),
+                  ),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ActionButton(
+                          text: 'Remove', onTap: bloc.removeFavorite))
+                ],
               );
             case MainPageState.minSymbols:
               return Align(
@@ -177,16 +196,18 @@ class MainPageStateWidget extends StatelessWidget {
                   title: 'Search results',
                   stream: bloc.observeSearchedSuperheroes());
             case MainPageState.nothingFound:
-              return Center(
-                child: InfoWithButton(
-                    title: 'Nothing found',
-                    subtitle: 'Search for something else',
-                    buttonText: 'Search',
-                    assetImage: "assets/images/hulk.png",
-                    imageHeight: 112,
-                    imageWidth: 84,
-                    imageTopPadding: 16),
-              );
+              return Stack(children: [
+                Center(
+                  child: InfoWithButton(
+                      title: 'Nothing found',
+                      subtitle: 'Search for something else',
+                      buttonText: 'Search',
+                      assetImage: "assets/images/hulk.png",
+                      imageHeight: 112,
+                      imageWidth: 84,
+                      imageTopPadding: 16),
+                )
+              ]);
             case MainPageState.loadingError:
               return Center(
                 child: InfoWithButton(

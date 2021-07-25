@@ -73,6 +73,18 @@ class MainBloc {
     currentTextSubject.add(text ?? '');
   }
 
+  void removeFavorite() {
+    final List<SuperheroInfo> currentFavorites =
+        favoriteSuperheroesSubject.value;
+    if (currentFavorites.isEmpty) {
+      favoriteSuperheroesSubject.add(SuperheroInfo.mocked);
+      return;
+    }
+
+    favoriteSuperheroesSubject
+        .add(currentFavorites.sublist(0, currentFavorites.length - 1));
+  }
+
   void nextState() {
     final currentState = stateSubject.value;
     final nextState = MainPageState.values[
