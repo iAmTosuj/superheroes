@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:superheroes/blocs/main_bloc.dart';
 
@@ -20,11 +21,34 @@ class SuperheroCard extends StatelessWidget {
         height: 70,
         child: Row(
           children: [
-            Image.network(
-              superheroInfo.imageUrl,
-              fit: BoxFit.cover,
+            Container(
               width: 70,
               height: 70,
+              color: Colors.white24,
+              child: CachedNetworkImage(
+                imageUrl: superheroInfo.imageUrl,
+                fit: BoxFit.cover,
+                width: 70,
+                height: 70,
+                errorWidget: (context, _, __) => Center(
+                  child: Image.asset(
+                    "assets/images/unknown.png",
+                    height: 62,
+                    width: 20,
+                  ),
+                ),
+                progressIndicatorBuilder: (context, _, downloadProgress) =>
+                    Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(
+                    value: downloadProgress.progress,
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF00BCD4)),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               width: 12,

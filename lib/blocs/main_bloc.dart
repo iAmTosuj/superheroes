@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:http/http.dart' as http;
+import 'package:superheroes/model/superhero.dart';
 
 class MainBloc {
   final BehaviorSubject<MainPageState> stateSubject = BehaviorSubject();
@@ -10,11 +14,13 @@ class MainBloc {
   final currentTextSubject = BehaviorSubject<String>.seeded('');
   static const minSymbols = 3;
 
+  http.Client? client;
+
   Stream<MainPageState> observeMainPageState() => stateSubject;
   StreamSubscription? textSubscription;
   StreamSubscription? searchSubscription;
 
-  MainBloc() {
+  MainBloc({this.client}) {
     stateSubject.add(MainPageState.noFavorites);
     searchSubscription?.cancel();
 
@@ -62,7 +68,24 @@ class MainBloc {
 
   Future<List<SuperheroInfo>> search(final String text) async {
     await Future.delayed(Duration(seconds: 1));
+    final token = dotenv.env['SUPERHERO_TOKEN'];
+    final response = await (client ??= http.Client())
+        .get(Uri.parse('https://superheroapi.com/api/$token/search/$text'));
+    final decoded = json.decode(response.body);
+    print(decoded['response']);
+    if (decoded['response'] == 'success') {
+      final List<Superhero> results =
+          decoded['results'].map<Superhero>((data) => Superhero.fromJson(data));
 
+      final List<SuperheroInfo> found = results.map((rewSuperhero) {
+        return SuperheroInfo(
+            name: rewSuperhero.name,
+            realName: rewSuperhero.biography.fullName,
+            imageUrl: rewSuperhero.image.url);
+      }).toList();
+      print(123);
+      return found;
+    }
     return SuperheroInfo.mocked
         .where((superhero) =>
             superhero.name.toLowerCase().contains(text.toLowerCase()))
@@ -101,6 +124,7 @@ class MainBloc {
 
     textSubscription?.cancel();
     searchSubscription?.cancel();
+    client?.close();
   }
 }
 
