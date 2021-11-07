@@ -19,7 +19,7 @@ Superhero _$SuperheroFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SuperheroToJson(Superhero instance) => <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
-      'powerstats': instance.powerstats.toJson(),
-      'biography': instance.biography.toJson(),
-      'image': instance.image.toJson(),
+      'powerstats': instance.powerstats,
+      'biography': instance.biography,
+      'image': instance.image,
     };
