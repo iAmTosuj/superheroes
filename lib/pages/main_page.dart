@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:superheroes/blocs/main_bloc.dart';
+import 'package:superheroes/blocs/main_bloc/models/superhero_info.dart';
 import 'package:superheroes/pages/superhero_page.dart';
+import 'package:superheroes/resources/main/page_status.dart';
 import 'package:superheroes/resources/superheroes_colors.dart';
 import 'package:superheroes/widgets/action_button.dart';
 import 'package:superheroes/widgets/info_with_button.dart';
 import 'package:superheroes/widgets/superhero_card.dart';
-import 'package:http/http.dart' as http;
 
 class MainPage extends StatefulWidget {
   final http.Client? client;
@@ -141,19 +143,19 @@ class MainPageStateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final MainBloc bloc = Provider.of<MainBloc>(context);
 
-    return StreamBuilder<MainPageState>(
+    return StreamBuilder<MainPageStatus>(
         stream: bloc.observeMainPageState(),
         builder: (context, snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             return SizedBox();
           }
 
-          final MainPageState state = snapshot.data!;
+          final MainPageStatus state = snapshot.data!;
 
           switch (state) {
-            case MainPageState.loading:
+            case MainPageStatus.loading:
               return LoadingIndicator();
-            case MainPageState.favorites:
+            case MainPageStatus.favorites:
               return Stack(
                 children: [
                   SuperheroesList(
@@ -165,7 +167,7 @@ class MainPageStateWidget extends StatelessWidget {
                           text: 'Remove', onTap: bloc.removeFavorite))
                 ],
               );
-            case MainPageState.noFavorites:
+            case MainPageStatus.noFavorites:
               return Stack(
                 children: [
                   Center(
@@ -184,7 +186,7 @@ class MainPageStateWidget extends StatelessWidget {
                           text: 'Remove', onTap: bloc.removeFavorite))
                 ],
               );
-            case MainPageState.minSymbols:
+            case MainPageStatus.minSymbols:
               return Align(
                 alignment: Alignment.topCenter,
                 child: Container(
@@ -199,11 +201,11 @@ class MainPageStateWidget extends StatelessWidget {
                   ),
                 ),
               );
-            case MainPageState.searchResults:
+            case MainPageStatus.searchResults:
               return SuperheroesList(
                   title: 'Search results',
                   stream: bloc.observeSearchedSuperheroes());
-            case MainPageState.nothingFound:
+            case MainPageStatus.nothingFound:
               return Stack(children: [
                 Center(
                   child: InfoWithButton(
@@ -216,7 +218,7 @@ class MainPageStateWidget extends StatelessWidget {
                       imageTopPadding: 16),
                 )
               ]);
-            case MainPageState.loadingError:
+            case MainPageStatus.loadingError:
               return Center(
                 child: InfoWithButton(
                     title: 'Error happened',
