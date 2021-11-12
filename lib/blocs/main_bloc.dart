@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
+import 'package:rxdart/rxdart.dart';
+import 'package:superheroes/blocs/main_bloc/models/superhero_info.dart';
 import 'package:superheroes/model/superhero.dart';
+import 'package:superheroes/resources/main/page_status.dart';
 
 class MainBloc {
-  final BehaviorSubject<MainPageState> stateSubject = BehaviorSubject();
+  final BehaviorSubject<MainPageStatus> stateSubject = BehaviorSubject();
   final favoriteSuperheroesSubject =
       BehaviorSubject<List<SuperheroInfo>>.seeded(SuperheroInfo.mocked);
   final searchedSuperheroesSubject = BehaviorSubject<List<SuperheroInfo>>();
@@ -16,12 +18,12 @@ class MainBloc {
 
   http.Client? client;
 
-  Stream<MainPageState> observeMainPageState() => stateSubject;
+  Stream<MainPageStatus> observeMainPageState() => stateSubject;
   StreamSubscription? textSubscription;
   StreamSubscription? searchSubscription;
 
   MainBloc({this.client}) {
-    stateSubject.add(MainPageState.noFavorites);
+    stateSubject.add(MainPageStatus.noFavorites);
     searchSubscription?.cancel();
 
     textSubscription =
@@ -35,12 +37,12 @@ class MainBloc {
                 haveFavorites: favorites.isNotEmpty)).listen((value) {
       if (value.searchedText.isEmpty) {
         if (value.haveFavorites) {
-          stateSubject.add(MainPageState.favorites);
+          stateSubject.add(MainPageStatus.favorites);
         } else {
-          stateSubject.add(MainPageState.noFavorites);
+          stateSubject.add(MainPageStatus.noFavorites);
         }
       } else if (value.searchedText.length < minSymbols) {
-        stateSubject.add(MainPageState.minSymbols);
+        stateSubject.add(MainPageStatus.minSymbols);
       } else {
         searchForSuperheroes(value.searchedText);
       }
@@ -52,17 +54,17 @@ class MainBloc {
       searchedSuperheroesSubject;
 
   void searchForSuperheroes(final String text) {
-    stateSubject.add(MainPageState.loading);
+    stateSubject.add(MainPageStatus.loading);
 
     searchSubscription = search(text).asStream().listen((searchResults) {
       if (searchResults.isEmpty) {
-        stateSubject.add(MainPageState.nothingFound);
+        stateSubject.add(MainPageStatus.nothingFound);
       } else {
         searchedSuperheroesSubject.add(searchResults);
-        stateSubject.add(MainPageState.searchResults);
+        stateSubject.add(MainPageStatus.searchResults);
       }
     }, onError: (error) {
-      stateSubject.add(MainPageState.loadingError);
+      stateSubject.add(MainPageStatus.loadingError);
     });
   }
 
@@ -110,9 +112,9 @@ class MainBloc {
 
   void nextState() {
     final currentState = stateSubject.value;
-    final nextState = MainPageState.values[
-        (MainPageState.values.indexOf(currentState) + 1) %
-            MainPageState.values.length];
+    final nextState = MainPageStatus.values[
+        (MainPageStatus.values.indexOf(currentState) + 1) %
+            MainPageStatus.values.length];
     stateSubject.add(nextState);
   }
 
@@ -126,60 +128,6 @@ class MainBloc {
     searchSubscription?.cancel();
     client?.close();
   }
-}
-
-enum MainPageState {
-  noFavorites,
-  minSymbols,
-  loading,
-  favorites,
-  searchResults,
-  nothingFound,
-  loadingError,
-}
-
-class SuperheroInfo {
-  final String name;
-  final String realName;
-  final String imageUrl;
-
-  const SuperheroInfo(
-      {required this.name, required this.realName, required this.imageUrl});
-
-  @override
-  String toString() {
-    return 'SuperheroInfo{name: $name, realName: $realName, imageUrl: $imageUrl}';
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SuperheroInfo &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          realName == other.realName &&
-          imageUrl == other.imageUrl;
-
-  @override
-  int get hashCode => name.hashCode ^ realName.hashCode ^ imageUrl.hashCode;
-
-  static const mocked = [
-    SuperheroInfo(
-        name: 'Batman',
-        realName: 'Bruce Wayne',
-        imageUrl:
-            'https://www.superherodb.com/pictures2/portraits/10/100/639.jpg'),
-    SuperheroInfo(
-        name: 'Ironman',
-        realName: 'Tony Stark',
-        imageUrl:
-            'https://www.superherodb.com/pictures2/portraits/10/100/85.jpg'),
-    SuperheroInfo(
-        name: 'Venom',
-        realName: 'Eddie Brock',
-        imageUrl:
-            'https://www.superherodb.com/pictures2/portraits/10/100/22.jpg'),
-  ];
 }
 
 class MainPageStateInfo {

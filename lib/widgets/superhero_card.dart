@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:superheroes/blocs/main_bloc.dart';
+import 'package:superheroes/blocs/main_bloc/models/superhero_info.dart';
 
 class SuperheroCard extends StatelessWidget {
   final SuperheroInfo superheroInfo;
