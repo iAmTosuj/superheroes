@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart';
 import 'package:superheroes/blocs/main_bloc/models/superhero_info.dart';
-import 'package:superheroes/model/superhero.dart';
+import 'package:superheroes/repository/main_page/model/superhero.dart';
 import 'package:superheroes/resources/main/page_status.dart';
 
 class MainBloc {
