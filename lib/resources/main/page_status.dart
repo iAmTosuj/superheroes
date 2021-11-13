@@ -1,4 +1,4 @@
-enum MainPageStatus {
+enum PageStatus {
   noFavorites,
   minSymbols,
   loading,
