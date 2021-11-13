@@ -9,7 +9,7 @@ import 'package:superheroes/model/superhero.dart';
 import 'package:superheroes/resources/main/page_status.dart';
 
 class MainBloc {
-  final BehaviorSubject<MainPageStatus> stateSubject = BehaviorSubject();
+  final BehaviorSubject<PageStatus> stateSubject = BehaviorSubject();
   final favoriteSuperheroesSubject =
       BehaviorSubject<List<SuperheroInfo>>.seeded(SuperheroInfo.mocked);
   final searchedSuperheroesSubject = BehaviorSubject<List<SuperheroInfo>>();
@@ -18,12 +18,12 @@ class MainBloc {
 
   http.Client? client;
 
-  Stream<MainPageStatus> observeMainPageState() => stateSubject;
+  Stream<PageStatus> observeMainPageState() => stateSubject;
   StreamSubscription? textSubscription;
   StreamSubscription? searchSubscription;
 
   MainBloc({this.client}) {
-    stateSubject.add(MainPageStatus.noFavorites);
+    stateSubject.add(PageStatus.noFavorites);
     searchSubscription?.cancel();
 
     textSubscription =
@@ -37,12 +37,12 @@ class MainBloc {
                 haveFavorites: favorites.isNotEmpty)).listen((value) {
       if (value.searchedText.isEmpty) {
         if (value.haveFavorites) {
-          stateSubject.add(MainPageStatus.favorites);
+          stateSubject.add(PageStatus.favorites);
         } else {
-          stateSubject.add(MainPageStatus.noFavorites);
+          stateSubject.add(PageStatus.noFavorites);
         }
       } else if (value.searchedText.length < minSymbols) {
-        stateSubject.add(MainPageStatus.minSymbols);
+        stateSubject.add(PageStatus.minSymbols);
       } else {
         searchForSuperheroes(value.searchedText);
       }
@@ -54,17 +54,17 @@ class MainBloc {
       searchedSuperheroesSubject;
 
   void searchForSuperheroes(final String text) {
-    stateSubject.add(MainPageStatus.loading);
+    stateSubject.add(PageStatus.loading);
 
     searchSubscription = search(text).asStream().listen((searchResults) {
       if (searchResults.isEmpty) {
-        stateSubject.add(MainPageStatus.nothingFound);
+        stateSubject.add(PageStatus.nothingFound);
       } else {
         searchedSuperheroesSubject.add(searchResults);
-        stateSubject.add(MainPageStatus.searchResults);
+        stateSubject.add(PageStatus.searchResults);
       }
     }, onError: (error) {
-      stateSubject.add(MainPageStatus.loadingError);
+      stateSubject.add(PageStatus.loadingError);
     });
   }
 
@@ -112,9 +112,9 @@ class MainBloc {
 
   void nextState() {
     final currentState = stateSubject.value;
-    final nextState = MainPageStatus.values[
-        (MainPageStatus.values.indexOf(currentState) + 1) %
-            MainPageStatus.values.length];
+    final nextState = PageStatus.values[
+        (PageStatus.values.indexOf(currentState) + 1) %
+            PageStatus.values.length];
     stateSubject.add(nextState);
   }
 

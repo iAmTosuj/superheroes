@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:superheroes/widgets/action_button.dart';
+import 'package:superheroes/ui/widgets/action_button.dart';
 
 class InfoWithButton extends StatelessWidget {
   final String title;
