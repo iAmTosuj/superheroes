@@ -1,4 +1,4 @@
-package ru.skillbranch.superheroes
+package ru.tosuj
 
 import io.flutter.embedding.android.FlutterActivity
 
