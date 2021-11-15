@@ -10,8 +10,9 @@ class DependenciesInitializer {
     Dio _createMainClient() {
       final token = dotenv.env['SUPERHERO_TOKEN'];
 
-      final client = Dio(BaseOptions(baseUrl: '${ResBaseUrl.main}/$token'));
-
+      final client = Dio(BaseOptions(baseUrl: '${ResBaseUrl.main}/api/$token'));
+      client.interceptors
+          .add(LogInterceptor(requestBody: true, responseBody: true));
       return client;
     }
 

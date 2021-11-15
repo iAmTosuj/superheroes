@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superheroes/blocs/main_bloc/main_cubit.dart';
 import 'package:superheroes/resources/superheroes_colors.dart';
 
 class SearchWidget extends StatelessWidget {
@@ -44,6 +46,7 @@ class SearchWidget extends StatelessWidget {
               borderSide: haveSearchText
                   ? BorderSide(color: Colors.white, width: 2)
                   : BorderSide(color: Colors.white24))),
+      onChanged: (value) => context.read<MainCubit>().searchSuperheroes(value),
     );
   }
 }

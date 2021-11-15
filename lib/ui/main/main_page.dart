@@ -5,8 +5,10 @@ import 'package:superheroes/blocs/main_bloc/main_cubit.dart';
 import 'package:superheroes/resources/main/page_status.dart';
 import 'package:superheroes/resources/superheroes_colors.dart';
 import 'package:superheroes/ui/main/widgets/search.dart';
+import 'package:superheroes/ui/main/widgets/superhero_list.dart';
 import 'package:superheroes/ui/widgets/action_button.dart';
 import 'package:superheroes/ui/widgets/info_with_button.dart';
+import 'package:superheroes/ui/widgets/loading_indicator.dart';
 
 class MainPage extends StatelessWidget {
   @override
@@ -36,19 +38,11 @@ class MainPageStateWidget extends StatelessWidget {
     return BlocBuilder<MainCubit, MainState>(builder: (context, state) {
       switch (state.status) {
         case PageStatus.loading:
-          return Center(
-            child: ActionButton(
-              text: 'Next State'.toUpperCase(),
-              onTap: () => bloc.nextState(),
-            ),
+          return Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+                padding: EdgeInsets.only(top: 110), child: LoadingIndicator()),
           );
-        // return Align(
-        //       alignment: Alignment.topCenter,
-        //       child: Padding(
-        //         padding: EdgeInsets.only(top: 110),
-        //         child: LoadingIndicator()
-        //       ),
-        //     );
         case PageStatus.favorites:
           return Stack(
             children: [
@@ -100,11 +94,10 @@ class MainPageStateWidget extends StatelessWidget {
             ),
           );
         case PageStatus.searchResults:
-          // return SuperheroesList(
-          //   title: 'Search results',
-          //   stream: bloc.observeSearchedSuperheroes(),
-          // );
-          return SizedBox();
+          return SuperheroesList(
+            title: 'Search results',
+            superheroes: state.superhero,
+          );
         case PageStatus.nothingFound:
           return Stack(children: [
             Center(
