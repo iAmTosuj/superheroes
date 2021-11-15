@@ -15,11 +15,16 @@ class MainPageRepositoryImpl implements MainPageRepository {
     await Future.delayed(Duration(seconds: 1));
 
     final response = await client.get('/search/$text');
+    if (response.data['error'] != null) {
+      return [];
+    }
 
     final List<Superhero> results = response.data['results']
-        .map<Superhero>((data) => Superhero.fromJson(data));
+        .map<Superhero>((data) => Superhero.fromJson(data))
+        .toList();
 
-    final List<SuperheroInfo> found = results.map((rewSuperhero) {
+    final List<SuperheroInfo> found =
+        results.map<SuperheroInfo>((rewSuperhero) {
       return SuperheroInfo(
           name: rewSuperhero.name,
           realName: rewSuperhero.biography.fullName,
@@ -27,10 +32,5 @@ class MainPageRepositoryImpl implements MainPageRepository {
     }).toList();
 
     return found;
-
-    return SuperheroInfo.mocked
-        .where((superhero) =>
-            superhero.name.toLowerCase().contains(text.toLowerCase()))
-        .toList();
   }
 }
